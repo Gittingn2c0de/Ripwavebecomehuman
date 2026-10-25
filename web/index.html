@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f1f3ef"><title>Ripwave Become Human — Spatial Control Studio</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <main class="main">
+      <header class="topbar">
+        <div class="title-lockup"><div class="eyebrow">SPATIAL INTELLIGENCE STUDIO <span class="build-pill">LOCAL</span></div><h1>Ripwave <span>Become Human</span></h1><p>Voice-led interaction · ripple dynamics · human simulation</p></div>
+        <div class="system-state"><span id="statusDot" class="status-dot pending"></span><div><strong id="statusText">Connecting to local runtime</strong><small id="runtimeMeta">Checking Python and MuJoCo…</small></div><button id="traceNav" class="context-button" type="button">Event trace</button><button id="refresh" class="icon-button" title="Refresh status" aria-label="Refresh status">↻</button></div>
+      </header>
+
+      <section class="command-strip">
+        <div class="command-symbol">⌁</div><div class="command-input-wrap"><label for="command">COMMAND THE FIELD</label><input id="command" value="start ripple" autocomplete="off" placeholder="Try ‘raise right arm’ or ‘expand the field’"></div>
+        <button id="send" class="primary-button"><span>Run command</span><span aria-hidden="true">↗</span></button>
+        <button id="speech" class="voice-button"><span class="voice-glyph">◉</span><span id="speechLabel">Speak</span></button>
+      </section>
+      <section class="transcript-strip" aria-live="polite"><div><small>LAST TRANSCRIPT</small><strong id="transcriptText">No speech or text command submitted yet.</strong></div><div><small>INTERPRETED INTENT</small><strong id="interpretedIntent">—</strong></div><div><small>COMMAND STATE</small><strong id="commandState">Ready</strong></div></section>
+
+      <section class="workspace" id="spatialWorkspace" aria-label="Spatial workspace">
+        <svg class="spatial-threads" id="spatialThreads" aria-hidden="true"><g id="spatialThreadLayer"></g></svg>
+        <section class="stage-card card spatial-node" data-spatial-node="core">
+          <div class="section-heading"><div><div class="eyebrow">01 / SPATIAL STAGE</div><h2>Live field</h2></div><div class="stage-actions"><span id="activeTag" class="state-pill">STANDBY</span><button id="worldDiagToggle" class="diag-button" type="button" aria-pressed="false" aria-controls="worldDiagnostics">World data</button><button id="recenter" class="icon-button" title="Recenter view" aria-label="Recenter view">⌖</button></div></div>
+          <div class="stage" id="stage" tabindex="0" role="img" aria-label="Ripple field and live MuJoCo MS-Human-700 simulation view. Drag to orbit; arrow keys orbit, plus and minus zoom.">
+            <canvas id="field" aria-label="Ripple field coordination visualization"></canvas>
+            <img id="humanRender" class="human-render" alt="Live MuJoCo render of the loaded MS-Human-700 simulation model">
+            <div id="renderBadge" class="render-badge">MODEL VIEW · WAITING FOR MUJOCO</div>
+            <div id="worldDiagnostics" class="world-diagnostics" hidden aria-live="polite"></div>
+            <div class="stage-overlay top-left"><span class="live-dot"></span><span id="stageMode">FIELD DORMANT</span></div>
+            <div class="stage-overlay top-right">SIMULATION VIEW <span class="overlay-sep">/</span> LOCAL</div>
+            <div class="axis axis-x">X</div><div class="axis axis-y">Y</div><div class="axis axis-z">Z</div>
+            <div class="stage-bottom"><div><small>LAST INTENT</small><strong id="lastIntent">—</strong></div><div><small>FIELD REVISION</small><strong id="revision">0</strong></div><div><small>ACOUSTIC INPUT</small><strong id="acousticState">OFFLINE</strong></div></div>
+          </div>
+          <div class="metrics-row"><div class="metric"><span>Amplitude</span><strong id="amp">0.35</strong><i class="metric-line"><b id="ampBar" style="width:44%"></b></i></div><div class="metric"><span>Frequency</span><strong id="freq">1.00 <small>Hz</small></strong><i class="metric-line"><b id="freqBar" style="width:33%"></b></i></div><div class="metric"><span>Field radius</span><strong id="radius">0.28 <small>m</small></strong><i class="metric-line"><b id="radiusBar" style="width:28%"></b></i></div><div class="metric"><span>Mic energy</span><strong id="rms">0.00</strong><i class="metric-line"><b id="meterFill" style="width:0%"></b></i></div></div>
+          <div class="feedback-line" role="status" aria-live="polite"><span class="feedback-icon" id="feedbackIcon">✳</span><span id="feedback">Ready. Enter a command or activate speech input.</span></div>
+        </section>
+
+        <aside class="side-stack">
+          <section class="card medium-card spatial-node" data-spatial-node="medium" aria-labelledby="mediumTitle">
+            <div class="section-heading"><div><div class="eyebrow">02 / DISTRIBUTED FIELD</div><h2 id="mediumTitle">Environment medium</h2></div><span id="mediumStatus" class="state-pill neutral">FIELD ONLY</span></div>
+            <p class="medium-intro">A local spatial grid coordinates through shared task ripples. Click the map to place an environmental event.</p>
+            <canvas id="mediumMap" class="medium-map" role="img" aria-label="Live Ripwave cell field colored by dynamic role, signal, memory, and task identity"></canvas>
+            <div class="medium-legend"><span><i class="legend-core"></i>CORE</span><span><i class="legend-mid"></i>MID</span><span><i class="legend-shell"></i>SHELL / MEMORY</span><span><i class="legend-task"></i>EVENT SIGNAL</span></div>
+            <div id="mediumStats" class="medium-stats" aria-live="polite">Waiting for local field state…</div>
+            <div class="medium-controls"><label class="medium-toggle"><input type="checkbox" id="neighborMessages"><span>Direct neighbor messages</span></label><span class="medium-primary-note">Shared field remains primary</span></div>
+            <div class="stressor-controls"><label>Event type<select id="stressorType"><option value="disturbance">Disturbance</option><option value="attention">Attention</option><option value="resource">Resource</option></select></label><label>Intensity<input id="stressorIntensity" type="range" min="0.1" max="1" step="0.05" value="0.65"></label><button id="injectStressor" class="load-button" type="button">Inject at center</button></div>
+          </section>
+          <section class="card input-card spatial-node" data-spatial-node="input"><div class="section-heading"><div><div class="eyebrow">03 / INPUT</div><h2>Interaction</h2></div><span class="subtle-tag">VOICE + TEXT</span></div>
+            <div class="quick-actions"><button data-command="expand"><span>↗</span> Expand field</button><button data-command="contract"><span>↙</span> Contract field</button><button data-command="raise your right arm"><span>↥</span> Raise arm</button><button data-command="lower your right arm"><span>↧</span> Lower arm</button><button data-command="reach forward"><span>→</span> Reach forward</button><button data-command="return to neutral"><span>◌</span> Neutral/reset</button><button data-command="start walking"><span>⌁</span> Start walking</button><button data-command="stop walking"><span>■</span> Stop walking</button><button class="stop-action" data-command="stop"><span>■</span> Stop</button></div>
+            <div class="divider"></div><div class="audio-head"><div><label>MICROPHONE ANALYSIS</label><small id="micStatus">Microphone is off · audio remains in browser</small></div><button id="mic" class="text-button">Enable</button></div><small id="speechStatus" class="speech-status" role="status">Speech recognition status: ready to start</small>
+            <div class="audio-meter"><div id="audioMeterFill"></div></div><div class="audio-stats"><div><small>RMS ENERGY</small><strong id="rmsDetail">0.000</strong></div><div><small>SPECTRAL CENTROID</small><strong id="centroid">— <small>Hz</small></strong></div></div>
+            <div class="divider"></div><div class="feedback-settings"><div><label>VISUAL ACKNOWLEDGMENT</label><small>Ripple pulse on accepted events</small></div><label class="switch"><input type="checkbox" id="visualCue" checked><span></span></label></div><div class="feedback-settings"><div><label>AUDIO ACKNOWLEDGMENT</label><small>Short confirmation tone</small></div><label class="switch"><input type="checkbox" id="audioCue"><span></span></label></div>
+            <label class="volume-label" for="volume">Cue volume <span id="volumeValue">8%</span></label><input id="volume" class="volume-slider" type="range" min="0" max="0.25" step="0.01" value="0.08">
+          </section>
+          <section class="card model-card spatial-node" data-spatial-node="simulation"><div class="section-heading"><div><div class="eyebrow">04 / SIMULATION</div><h2>MS-Human-700</h2></div><span id="modelBadge" class="state-pill neutral">NOT LOADED</span></div>
+            <p class="model-intro">MuJoCo runtime and model inspection. The bounded right-arm baseline is model-checked; walking has no validated controller.</p>
+            <label for="modelSelect">MODEL XML FOUND IN PROJECT</label><div class="model-select-row"><select id="modelSelect"><option value="">Scanning project files…</option></select><button id="loadModel" class="load-button">Load</button></div>
+            <div id="mujocoStatus" class="model-status">Searching for XML models…</div>
+            <div class="model-stats"><div><small>BODIES</small><strong id="nbody">—</strong></div><div><small>JOINTS</small><strong id="njnt">—</strong></div><div><small>ACTUATORS</small><strong id="nu">—</strong></div></div>
+            <div id="controlNotice" class="notice"><span>◈</span><p>Only the verified bounded right-arm baseline is controllable. Walking requires a trained policy and remains unavailable.</p></div>
+          </section>
+        </aside>
+      </section>
+
+      <section class="card trace-card" id="trace"><div class="section-heading"><div><div class="eyebrow">04 / OBSERVABILITY</div><h2>Event trace</h2></div><div class="trace-actions"><span id="eventCount" class="subtle-tag">0 EVENTS</span><button id="clearHint" class="text-button">Refresh log</button></div></div><div id="eventLog" class="event-log"><div class="empty-state"><span>≋</span><strong>No events yet</strong><small>Accepted commands and their source will appear here.</small></div></div></section>
+      <footer><span>RIPWAVE BECOME HUMAN <i>·</i> EXPLORATORY BUILD</span><span>Local-first · no raw audio sent to server · simulation only</span></footer>
+    </main>
+  </div>
+  <script src="/speech.js"></script><script src="/app.js"></script><script src="/spatial-workspace.js"></script>
+</body></html>
